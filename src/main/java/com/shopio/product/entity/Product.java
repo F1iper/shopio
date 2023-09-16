@@ -24,6 +24,8 @@ public class Product {
     private String description;
     private double price;
     private int inventory;
-    private String category;
+
+    @Field("category")
+    private Category category;
 }
 

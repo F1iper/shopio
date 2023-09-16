@@ -39,6 +39,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public void deleteProduct(String productId){
-        productRepository.deleteById(productId);
+        if (productRepository.existsById(productId)) {
+            productRepository.deleteById(productId);
+        }
     }
 }

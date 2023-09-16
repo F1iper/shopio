@@ -1,7 +1,7 @@
 package com.shopio.product.controller;
 
 import com.shopio.product.entity.Product;
-import com.shopio.product.service.ProductServiceImpl;
+import com.shopio.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,37 +22,37 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductServiceImpl productServiceImpl;
+    private final ProductService productService;
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
-        List<Product> products = productServiceImpl.getAllProducts();
+        List<Product> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable String productId){
-        Optional<Product> product = productServiceImpl.getProductById(productId);
+        Optional<Product> product = productService.getProductById(productId);
         return product.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product){
-        Product savedProduct = productServiceImpl.createProduct(product);
+        Product savedProduct = productService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
 
     @PutMapping("/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable String productId, @RequestBody Product product){
-        Optional<Product> updatedProduct = productServiceImpl.updateProduct(productId, product);
+        Optional<Product> updatedProduct = productService.updateProduct(productId, product);
         return updatedProduct.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String productId){
-        productServiceImpl.deleteProduct(productId);
+        productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
 }
