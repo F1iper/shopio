@@ -1,4 +1,4 @@
-package com.shopio.config;
+package com.shopio.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +15,12 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/").permitAll();
-                    auth.anyRequest().authenticated();
+                    auth.requestMatchers("/**").permitAll();
+//                    auth.anyRequest().authenticated();
                 })
-                .oauth2Login(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
+//                .oauth2Login(Customizer.withDefaults())
+//                .formLogin(Customizer.withDefaults())
+                .csrf().disable()
                 .build();
     }
 }
