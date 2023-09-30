@@ -39,12 +39,13 @@ class ProductServiceTest {
     @Test
     void shouldGetListOfExistingProductsFromDatabase(){
         //given
-        final List<Product> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         products.add(new Product("1", "product1", "description1", 20.22, 200, Category.ELECTRONICS));
         products.add(new Product("2", "product2", "description2", 10.99, 4000, Category.CLOTHING));
 
-        //when
         when(productRepository.findAll()).thenReturn(products);
+
+        //when
         List<Product> resultList = productService.getAllProducts();
 
         //then
@@ -58,10 +59,11 @@ class ProductServiceTest {
     @Test
     void shouldGetProductByIdFromDatabase(){
         //given
-        final Product product = new Product("3", "product3", "description3", 9.99, 10, Category.BOOKS);
+        Product product = new Product("3", "product3", "description3", 9.99, 10, Category.BOOKS);
+
+        when(productRepository.findById("3")).thenReturn(Optional.of(product));
 
         //when
-        when(productRepository.findById("3")).thenReturn(Optional.of(product));
         Optional<Product> result = productService.getProductById("3");
 
         //then
@@ -76,10 +78,11 @@ class ProductServiceTest {
     @Test
     void shouldCreateProductWithProperProperties(){
         //given
-        final Product product = new Product("4", "product4", "description4", 250, 10, Category.ELECTRONICS);
+        Product product = new Product("4", "product4", "description4", 250, 10, Category.ELECTRONICS);
+
+        when(productRepository.save(product)).thenReturn(product);
 
         //when
-        when(productRepository.save(product)).thenReturn(product);
         Product result = productService.createProduct(product);
 
         //then
@@ -95,8 +98,8 @@ class ProductServiceTest {
     @Test
     void shouldUpdateProductWithValidProductAndReturnsUpdatedProduct(){
         //given
-        final String productId = "1";
-        final Product updatedProduct = new Product(productId, "Updated Product", "Updated Description", 19.99, 5, Category.BOOKS);
+        String productId = "1";
+        Product updatedProduct = new Product(productId, "Updated Product", "Updated Description", 19.99, 5, Category.BOOKS);
 
         when(productRepository.existsById(productId)).thenReturn(true);
         when(productRepository.save(updatedProduct)).thenReturn(updatedProduct);

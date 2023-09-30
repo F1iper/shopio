@@ -26,7 +26,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductReviewController {
     private final ProductReviewService productReviewService;
-    private final ProductService productService;
 
     @GetMapping
     public ResponseEntity<List<ProductReview>> getAllReviews(){
