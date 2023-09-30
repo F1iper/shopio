@@ -21,11 +21,11 @@ public class SecurityConfig extends VaadinWebSecurity {
     }
 
     @Bean
-    UserDetailsManager userDetailsManager() {
+    UserDetailsManager userDetailsManager(){
         return new InMemoryUserDetailsManager(
                 User.withUsername("root")
                         .password("{noop}root")
-                        .roles("USER")
+                        .roles("ADMIN")
                         .build()
         );
     }
