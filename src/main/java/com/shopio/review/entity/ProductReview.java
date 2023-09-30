@@ -18,6 +18,6 @@ public class ProductReview {
     private String productId;
     private String userId;
     private String comment;
-    private Integer rating;
+    private String rating;
 
 }

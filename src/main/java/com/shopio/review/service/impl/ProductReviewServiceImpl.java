@@ -2,6 +2,8 @@ package com.shopio.review.service.impl;
 
 import com.shopio.exception.ReviewNotBelongToProductException;
 import com.shopio.exception.ReviewNotFoundException;
+import com.shopio.product.entity.Product;
+import com.shopio.product.repository.ProductRepository;
 import com.shopio.review.entity.ProductReview;
 import com.shopio.review.repository.ProductReviewRepository;
 import com.shopio.review.service.ProductReviewService;
@@ -17,18 +19,16 @@ import java.util.Optional;
 @Slf4j
 public class ProductReviewServiceImpl implements ProductReviewService {
     private final ProductReviewRepository productReviewRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public ProductReview createProductReview(String productId, ProductReview productReview){
         try {
-            productReview.setProductId(productId);
-            ProductReview createdReview = productReviewRepository.save(productReview);
+            Product existingProduct = productRepository.findById(productId)
+                    .orElseThrow(() -> new RuntimeException("Product with ID: " + productId + " does not exist"));
 
-            if (createdReview != null) {
-                return createdReview;
-            } else {
-                throw new RuntimeException("Failed to create product review.");
-            }
+            productReview.setProductId(existingProduct.getId());
+            return productReviewRepository.save(productReview);
         } catch (Exception e) {
             throw new RuntimeException("An unexpected error occurred while creating the product review.", e);
         }
@@ -47,7 +47,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 if ("comment".equalsIgnoreCase(updateField)) {
                     existingReview.setComment(newValue);
                 } else if ("rating".equalsIgnoreCase(updateField)) {
-                    existingReview.setRating(Integer.parseInt(newValue));
+                    existingReview.setRating(newValue);
                 } else {
                     throw new IllegalArgumentException("Invalid updateField: " + updateField);
                 }
