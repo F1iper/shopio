@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +39,17 @@ public class ProductServiceImpl implements ProductService {
         return Optional.of(productRepository.save(product));
     }
 
-    public void deleteProduct(String productId){
-        if (productRepository.existsById(productId)) {
-            productRepository.deleteById(productId);
-        }
+    public void deleteProducts(Set<Product> toDeleteSet){
+        productRepository.deleteAll(toDeleteSet);
+    }
+
+    @Override
+    public List<Product> findByName(String value){
+        return productRepository.findByNameRegexIgnoreCase(value);
+    }
+
+    @Override
+    public void deleteProductById(String productId){
+        productRepository.deleteById(productId);
     }
 }

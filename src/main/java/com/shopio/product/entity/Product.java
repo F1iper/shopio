@@ -17,15 +17,12 @@ public class Product {
 
     @Id
     private String id;
-
-    @Field(name = "product_name")
     private String name;
-
     private String description;
     private double price;
     private int inventory;
-
     @Field("category")
     private Category category;
+
 }
 

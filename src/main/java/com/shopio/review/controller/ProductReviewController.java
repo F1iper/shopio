@@ -2,7 +2,6 @@ package com.shopio.review.controller;
 
 import com.shopio.exception.ReviewNotBelongToProductException;
 import com.shopio.exception.ReviewNotFoundException;
-import com.shopio.product.service.ProductService;
 import com.shopio.review.entity.ProductReview;
 import com.shopio.review.service.ProductReviewService;
 import lombok.RequiredArgsConstructor;

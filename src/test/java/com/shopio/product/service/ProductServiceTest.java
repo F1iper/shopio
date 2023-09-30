@@ -122,10 +122,9 @@ class ProductServiceTest {
         when(productRepository.existsById(productId)).thenReturn(false);
 
         //when
-        productService.deleteProduct(productId);
+        productService.deleteProductById(productId);
 
         //then
-        verify(productRepository).existsById(productId);
-        verify(productRepository, never()).deleteById(productId);
+        verify(productRepository, times(1)).deleteById(productId);
     }
 }
