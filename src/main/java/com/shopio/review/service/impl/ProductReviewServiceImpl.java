@@ -17,7 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ProductReviewServiceImpl implements ProductReviewService {
+class ProductReviewServiceImpl implements ProductReviewService {
     private final ProductReviewRepository productReviewRepository;
     private final ProductRepository productRepository;
 

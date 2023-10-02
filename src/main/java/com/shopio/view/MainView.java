@@ -22,7 +22,7 @@ import java.util.Set;
 @Route("")
 @PageTitle("Main View")
 @RolesAllowed("ADMIN")
-public class MainView extends VerticalLayout {
+final class MainView extends VerticalLayout {
 
     private final ProductService productService;
     private LogoLayout logoLayout;
@@ -50,7 +50,6 @@ public class MainView extends VerticalLayout {
 
     private Grid<Product> createProductGrid(){
         grid = new Grid<>(Product.class);
-        grid.setSelectionMode(Grid.SelectionMode.MULTI);
         grid.setSizeFull();
         grid.setColumns("name", "description", "price", "inventory");
         grid.addComponentColumn(product -> createInventoryStatusIcon(product.getInventory()));
@@ -65,7 +64,7 @@ public class MainView extends VerticalLayout {
         filterField.addValueChangeListener(e -> updateProducts());
 
         Button addButton = new Button("Add product");
-        Button removeButton = new Button("Remove product");
+        Button removeButton = new Button("Remove product(s)");
 
         addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
         removeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
@@ -74,10 +73,7 @@ public class MainView extends VerticalLayout {
             getUI().ifPresent(ui -> ui.navigate("/product/create"));
         });
         removeButton.addClickListener(e -> {
-            Notification.show("Product removed", 3000, Notification.Position.BOTTOM_START);
-            Set<Product> selectedItems = grid.getSelectedItems();
-            productService.deleteProducts(selectedItems);
-            grid.setItems(productService.getAllProducts());
+            getUI().ifPresent(ui -> ui.navigate("/product/remove"));
         });
         return new HorizontalLayout(filterField, addButton, removeButton);
     }
