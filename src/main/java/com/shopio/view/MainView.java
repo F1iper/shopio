@@ -2,7 +2,6 @@ package com.shopio.view;
 
 import com.shopio.product.entity.Product;
 import com.shopio.product.service.ProductService;
-import com.shopio.view.dialog.CreateProductDialog;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -29,7 +28,6 @@ public class MainView extends VerticalLayout {
     private LogoLayout logoLayout;
     private TextField filterField;
     private Grid<Product> grid;
-    private CreateProductDialog createProductDialog;
 
     public MainView(ProductService productService){
         this.productService = productService;
@@ -42,7 +40,6 @@ public class MainView extends VerticalLayout {
         logoLayout = new LogoLayout();
         filterField = new TextField();
         grid = createProductGrid();
-        createProductDialog = new CreateProductDialog(productService);
     }
 
     private void configureLayout(){
@@ -70,12 +67,11 @@ public class MainView extends VerticalLayout {
         Button addButton = new Button("Add product");
         Button removeButton = new Button("Remove product");
 
-        addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+        removeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
 
         addButton.addClickListener(e -> {
-            createProductDialog.open();
-            // TODO: 9/30/23 implement refreshing the list of items after CREATE PRODUCT
-            grid.setItems(productService.getAllProducts());
+            getUI().ifPresent(ui -> ui.navigate("/product/create"));
         });
         removeButton.addClickListener(e -> {
             Notification.show("Product removed", 3000, Notification.Position.BOTTOM_START);
