@@ -16,6 +16,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+
+import java.util.Set;
 
 @PageTitle("Create product")
 @Route("product/create")
@@ -94,21 +100,64 @@ class CreateProductView extends VerticalLayout {
         return new VerticalLayout(productForm);
     }
 
-    private void saveProduct(){
+    private void saveProduct() {
+        // Create a Product instance
         Product product = new Product();
-        product.setName(nameField.getValue().toLowerCase());
-        product.setDescription(descriptionField.getValue().toLowerCase());
-        product.setPrice(Double.parseDouble(priceField.getValue()));
-        product.setInventory(Integer.parseInt(inventoryField.getValue()));
+
+        // Get field values
+        String nameValue = nameField.getValue();
+        String descriptionValue = descriptionField.getValue();
+        String priceValue = priceField.getValue();
+        String inventoryValue = inventoryField.getValue();
+
+        // Set values in the Product instance
+        product.setName(nameValue);
+        product.setDescription(descriptionValue);
+
+        try {
+            // Validate and set the price
+            double price = Double.parseDouble(priceValue);
+            product.setPrice(price);
+        } catch (NumberFormatException e) {
+            Notification.show("Invalid price format. Please enter a valid number.", 3000, Notification.Position.TOP_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+
+        try {
+            // Validate and set the inventory
+            int inventory = Integer.parseInt(inventoryValue);
+            product.setInventory(inventory);
+        } catch (NumberFormatException e) {
+            Notification.show("Invalid amount format. Please enter a valid integer.", 3000, Notification.Position.TOP_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+
+        // Set the category
         product.setCategory(categoryComboBox.getValue());
 
-        Product savedProduct = productService.createProduct(product);
+        // Perform validation using Bean Validation
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<Product>> violations = validator.validate(product);
 
-        if (savedProduct != null) {
-            Notification added = Notification.show("Product saved successfully!", 3000, Notification.Position.TOP_CENTER);
-            added.addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_SUCCESS);
+        if (!violations.isEmpty()) {
+            StringBuilder errorMessage = new StringBuilder("Validation errors:\n");
+            for (ConstraintViolation<Product> violation : violations) {
+                errorMessage.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
+            }
+            Notification.show(errorMessage.toString(), 3000, Notification.Position.TOP_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } else {
-            Notification.show("Failed to save product!", 3000, Notification.Position.TOP_CENTER);
+            // Save the product if validation succeeds
+            Product savedProduct = productService.createProduct(product);
+
+            if (savedProduct != null) {
+                Notification added = Notification.show("Product saved successfully!", 3000, Notification.Position.TOP_CENTER);
+                added.addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_SUCCESS);
+            } else {
+                Notification.show("Failed to save product!", 3000, Notification.Position.TOP_CENTER)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
         }
     }
 }
