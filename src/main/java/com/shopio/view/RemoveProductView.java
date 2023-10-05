@@ -71,8 +71,8 @@ final class RemoveProductView extends VerticalLayout {
     private Grid<Product> createProductGrid(){
         grid = new Grid<>(Product.class);
         grid.setSizeFull();
-        grid.setColumns("name", "description", "price", "inventory");
-        grid.addComponentColumn(product -> createInventoryStatusIcon(product.getInventory()));
+        grid.setColumns("name", "description", "price", "amount");
+        grid.addComponentColumn(product -> createInventoryStatusIcon(product.getAmount()));
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         return grid;
     }

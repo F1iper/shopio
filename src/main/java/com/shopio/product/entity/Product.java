@@ -1,9 +1,8 @@
 package com.shopio.product.entity;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,11 +30,13 @@ public class Product {
     @Size(min = 10, max = 255, message = "Product description must be between 10 and 255 characters")
     private String description;
 
-    @PositiveOrZero
+    @Min(2)
+    @Max(9999)
     private double price;
 
-    @PositiveOrZero
-    private int inventory;
+    @Min(0)
+    @Max(10000)
+    private int amount;
 
     @Field("category")
     private Category category;

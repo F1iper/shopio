@@ -22,6 +22,12 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
 import java.util.Set;
+import java.util.function.Function;
+
+import static com.shopio.notification.Constants.ENTER_VALID_AMOUNT;
+import static com.shopio.notification.Constants.ENTER_VALID_PRICE;
+import static com.shopio.notification.Constants.PRODUCT_FAILED_TO_SAVE;
+import static com.shopio.notification.Constants.PRODUCT_SAVED;
 
 @PageTitle("Create product")
 @Route("product/create")
@@ -33,7 +39,7 @@ class CreateProductView extends VerticalLayout {
     private TextField nameField;
     private TextField descriptionField;
     private TextField priceField;
-    private TextField inventoryField;
+    private TextField amountField;
     private ComboBox<Category> categoryComboBox;
     private Button saveButton;
     private Button cancelButton;
@@ -62,7 +68,7 @@ class CreateProductView extends VerticalLayout {
         nameField = new TextField("Product name");
         descriptionField = new TextField("Description");
         priceField = new TextField("Price");
-        inventoryField = new TextField("Amount");
+        amountField = new TextField("Amount");
 
         categoryComboBox = new ComboBox<>("Category");
         categoryComboBox.setItems(Category.values());
@@ -72,12 +78,46 @@ class CreateProductView extends VerticalLayout {
 
     private void addSaveAndCancelListeners(){
         saveButton.addClickListener(e -> {
-            saveProduct();
-            getUI().ifPresent(ui -> ui.navigate(""));
+            if (validateAndSaveProduct()) {
+                getUI().ifPresent(ui -> ui.navigate(""));
+            }
         });
         cancelButton.addClickListener(e -> {
             getUI().ifPresent(ui -> ui.navigate(""));
         });
+    }
+
+    private boolean validateAndSaveProduct(){
+        String nameValue = nameField.getValue();
+        String descriptionValue = descriptionField.getValue();
+        String priceValue = priceField.getValue();
+        String amountValue = amountField.getValue();
+
+        Product product = new Product();
+        product.setName(nameValue);
+        product.setDescription(descriptionValue);
+
+        product.setPrice(parseDouble(priceValue, ENTER_VALID_PRICE));
+        product.setAmount(parseInt(amountValue, ENTER_VALID_AMOUNT));
+
+        product.setCategory(categoryComboBox.getValue());
+
+        Set<ConstraintViolation<Product>> violations = validateProduct(product);
+
+        if (! violations.isEmpty()) {
+            showValidationErrors(violations);
+            return false;
+        } else {
+            Product savedProduct = productService.createProduct(product);
+
+            if (savedProduct != null) {
+                showSuccessMessage(PRODUCT_SAVED);
+                return true;
+            } else {
+                showErrorMessage(PRODUCT_FAILED_TO_SAVE);
+                return false;
+            }
+        }
     }
 
     private Component createButtonLayout(){
@@ -96,68 +136,49 @@ class CreateProductView extends VerticalLayout {
     private Component createProductForm(){
         FormLayout productForm = new FormLayout();
 
-        productForm.add(nameField, descriptionField, priceField, inventoryField, categoryComboBox);
+        productForm.add(nameField, descriptionField, priceField, amountField, categoryComboBox);
         return new VerticalLayout(productForm);
     }
 
-    private void saveProduct() {
-        // Create a Product instance
-        Product product = new Product();
 
-        // Get field values
-        String nameValue = nameField.getValue();
-        String descriptionValue = descriptionField.getValue();
-        String priceValue = priceField.getValue();
-        String inventoryValue = inventoryField.getValue();
+    private double parseDouble(String value, String errorMessage){
+        return parseNumber(value, errorMessage, Double::parseDouble, 0.0);
+    }
 
-        // Set values in the Product instance
-        product.setName(nameValue);
-        product.setDescription(descriptionValue);
+    private int parseInt(String value, String errorMessage){
+        return parseNumber(value, errorMessage, Integer::parseInt, 0);
+    }
 
+    private <T> T parseNumber(String value, String errorMessage, Function<String, T> parser, T defaultValue){
         try {
-            // Validate and set the price
-            double price = Double.parseDouble(priceValue);
-            product.setPrice(price);
+            return parser.apply(value);
         } catch (NumberFormatException e) {
-            Notification.show("Invalid price format. Please enter a valid number.", 3000, Notification.Position.TOP_CENTER)
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            showErrorMessage(errorMessage);
+            return defaultValue;
         }
+    }
 
-        try {
-            // Validate and set the inventory
-            int inventory = Integer.parseInt(inventoryValue);
-            product.setInventory(inventory);
-        } catch (NumberFormatException e) {
-            Notification.show("Invalid amount format. Please enter a valid integer.", 3000, Notification.Position.TOP_CENTER)
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
-        }
-
-        // Set the category
-        product.setCategory(categoryComboBox.getValue());
-
-        // Perform validation using Bean Validation
+    private Set<ConstraintViolation<Product>> validateProduct(Product product){
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
-        Set<ConstraintViolation<Product>> violations = validator.validate(product);
+        return validator.validate(product);
+    }
 
-        if (!violations.isEmpty()) {
-            StringBuilder errorMessage = new StringBuilder("Validation errors:\n");
-            for (ConstraintViolation<Product> violation : violations) {
-                errorMessage.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
-            }
-            Notification.show(errorMessage.toString(), 3000, Notification.Position.TOP_CENTER)
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
-        } else {
-            // Save the product if validation succeeds
-            Product savedProduct = productService.createProduct(product);
-
-            if (savedProduct != null) {
-                Notification added = Notification.show("Product saved successfully!", 3000, Notification.Position.TOP_CENTER);
-                added.addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_SUCCESS);
-            } else {
-                Notification.show("Failed to save product!", 3000, Notification.Position.TOP_CENTER)
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            }
+    private void showValidationErrors(Set<ConstraintViolation<Product>> violations){
+        StringBuilder errorMessage = new StringBuilder("Validation errors:\n");
+        for (ConstraintViolation<Product> violation : violations) {
+            errorMessage.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
         }
+        showErrorMessage(errorMessage.toString());
+    }
+
+    private void showSuccessMessage(String message){
+        Notification added = Notification.show(message, 3000, Notification.Position.TOP_START);
+        added.addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_SUCCESS);
+    }
+
+    private void showErrorMessage(String message){
+        Notification.show(message, 4000, Notification.Position.TOP_START)
+                .addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 }

@@ -8,7 +8,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -16,8 +15,6 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
-
-import java.util.Set;
 
 @Route("")
 @PageTitle("Main View")
@@ -51,8 +48,8 @@ final class MainView extends VerticalLayout {
     private Grid<Product> createProductGrid(){
         grid = new Grid<>(Product.class);
         grid.setSizeFull();
-        grid.setColumns("name", "description", "price", "inventory");
-        grid.addComponentColumn(product -> createInventoryStatusIcon(product.getInventory()));
+        grid.setColumns("name", "description", "price", "amount");
+        grid.addComponentColumn(product -> createInventoryStatusIcon(product.getAmount()));
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         return grid;
     }
