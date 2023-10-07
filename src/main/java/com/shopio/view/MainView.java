@@ -51,27 +51,13 @@ final class MainView extends VerticalLayout {
         grid.setSizeFull();
         grid.setColumns("name", "price");
         grid.addComponentColumn(product -> createInventoryStatusIcon(product.getAmount())).setHeader("Inventory Status");
-        grid.addComponentColumn(this::createDetailButton).setHeader("Details");
-
-        // Adjust column widths (optional)
-        grid.getColumnByKey("name").setAutoWidth(true);
-        grid.getColumnByKey("price").setAutoWidth(true);
-        grid.getColumnByKey("Inventory Status").setAutoWidth(true);
-        grid.getColumnByKey("Details").setAutoWidth(true);
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 openProductDetailDialog(event.getValue());
             }
         });
-
         return grid;
-    }
-
-    private Button createDetailButton(Product product) {
-        Button detailButton = new Button("Details", e -> openProductDetailDialog(product));
-        detailButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SMALL);
-        return detailButton;
     }
 
     private void openProductDetailDialog(Product product){

@@ -1,7 +1,14 @@
 package com.shopio.view.dialog;
 
 import com.shopio.product.entity.Product;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
 public class ProductDetailDialog extends Dialog {
@@ -15,7 +22,7 @@ public class ProductDetailDialog extends Dialog {
         nameField.setValue(product.getName());
         nameField.setReadOnly(true);
 
-        TextField descriptionField = new TextField("Description");
+        TextArea descriptionField = new TextArea("Description");
         descriptionField.setValue(product.getDescription());
         descriptionField.setReadOnly(true);
 
@@ -27,6 +34,12 @@ public class ProductDetailDialog extends Dialog {
         inventoryField.setValue(String.valueOf(product.getAmount()));
         inventoryField.setReadOnly(true);
 
-        add(nameField, descriptionField, priceField, inventoryField);
+        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE), e -> close());
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        horizontalLayout.add(closeButton);
+
+        add(horizontalLayout, nameField, descriptionField, priceField, inventoryField);
     }
 }
