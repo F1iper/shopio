@@ -2,6 +2,7 @@ package com.shopio.view;
 
 import com.shopio.product.entity.Product;
 import com.shopio.product.service.ProductService;
+import com.shopio.view.dialog.ProductDetailDialog;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -71,10 +72,20 @@ final class RemoveProductView extends VerticalLayout {
     private Grid<Product> createProductGrid(){
         grid = new Grid<>(Product.class);
         grid.setSizeFull();
-        grid.setColumns("name", "description", "price", "amount");
-        grid.addComponentColumn(product -> createInventoryStatusIcon(product.getAmount()));
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
+        grid.setColumns("name", "price");
+        grid.addComponentColumn(product -> createInventoryStatusIcon(product.getAmount())).setHeader("Inventory Status");
+
+        grid.asSingleSelect().addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                openProductDetailDialog(event.getValue());
+            }
+        });
         return grid;
+    }
+
+    private void openProductDetailDialog(Product product){
+        ProductDetailDialog dialog = new ProductDetailDialog(product);
+        dialog.open();
     }
 
     private void initializeComponents(){
