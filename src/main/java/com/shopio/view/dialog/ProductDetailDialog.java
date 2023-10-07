@@ -23,7 +23,7 @@ public class ProductDetailDialog extends Dialog {
         priceField.setValue(String.valueOf(product.getPrice()));
         priceField.setReadOnly(true);
 
-        TextField inventoryField = new TextField("Amount");
+        TextField inventoryField = new TextField("In stock");
         inventoryField.setValue(String.valueOf(product.getAmount()));
         inventoryField.setReadOnly(true);
 
