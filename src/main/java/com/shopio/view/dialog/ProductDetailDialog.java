@@ -1,6 +1,7 @@
 package com.shopio.view.dialog;
 
 import com.shopio.product.entity.Product;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -36,10 +37,24 @@ public class ProductDetailDialog extends Dialog {
 
         Button closeButton = new Button(new Icon(VaadinIcon.CLOSE), e -> close());
 
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        horizontalLayout.add(closeButton);
+        HorizontalLayout exitLayout = new HorizontalLayout();
+        exitLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        exitLayout.add(closeButton);
 
-        add(horizontalLayout, nameField, descriptionField, priceField, inventoryField);
+        Button viewReviewsButton = new Button("View Reviews", e -> navigateToReviews(product.getId()));
+        viewReviewsButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+
+        add(exitLayout, nameField, descriptionField, priceField, inventoryField);
+
+        HorizontalLayout reviewsLayout = new HorizontalLayout();
+        reviewsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        reviewsLayout.add(viewReviewsButton);
+
+        add(reviewsLayout);
+    }
+
+
+    private void navigateToReviews(String path){
+        UI.getCurrent().navigate("product/reviews/" + path);
     }
 }

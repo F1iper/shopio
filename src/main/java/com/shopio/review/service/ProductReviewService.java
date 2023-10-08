@@ -18,4 +18,6 @@ public interface ProductReviewService {
     Optional<ProductReview> getProductReviewById(String id);
 
     void deleteProductReview(String id);
+
+    List<ProductReview> getReviewsByProductId(String id);
 }

@@ -28,9 +28,14 @@ class ProductReviewServiceImpl implements ProductReviewService {
                     .orElseThrow(() -> new RuntimeException("Product with ID: " + productId + " does not exist"));
 
             productReview.setProductId(existingProduct.getId());
-            return productReviewRepository.save(productReview);
+            ProductReview createdReview = productReviewRepository.save(productReview);
+
+            log.info("Created a new review with ID [{}] for product [{}].", createdReview.getId(), productId);
+
+            return createdReview;
         } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while creating the product review.", e);
+            log.error("Error creating a review for product ID [{}].", productId, e);
+            throw new RuntimeException("An unexpected error occurred while creating the product review.");
         }
     }
 
@@ -78,6 +83,18 @@ class ProductReviewServiceImpl implements ProductReviewService {
     public void deleteProductReview(String id){
         if (productReviewRepository.existsById(id)) {
             productReviewRepository.deleteById(id);
+        }
+    }
+
+    @Override
+    public List<ProductReview> getReviewsByProductId(String productId){
+        try {
+            List<ProductReview> reviews = productReviewRepository.findByProductId(productId);
+            log.info("Retrieved {} reviews for product ID [{}].", reviews.size(), productId);
+            return reviews;
+        } catch (Exception e) {
+            log.error("Error retrieving reviews for product ID [{}].", productId, e);
+            throw new RuntimeException("An unexpected error occurred while fetching reviews.");
         }
     }
 }
