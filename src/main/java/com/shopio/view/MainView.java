@@ -21,7 +21,7 @@ import jakarta.annotation.security.RolesAllowed;
 @PageTitle("Main View")
 @RolesAllowed("ADMIN")
 final class MainView extends VerticalLayout {
-
+    // TODO: 10/8/23 after logging in -> image is shown 
     private final ProductService productService;
     private LogoLayout logoLayout;
     private TextField filterField;

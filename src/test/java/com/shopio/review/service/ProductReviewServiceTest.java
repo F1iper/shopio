@@ -1,11 +1,12 @@
 package com.shopio.review.service;
 
+import com.shopio.exception.ReviewNotBelongToProductException;
+import com.shopio.exception.ReviewNotFoundException;
 import com.shopio.product.entity.Category;
 import com.shopio.product.entity.Product;
 import com.shopio.product.repository.ProductRepository;
 import com.shopio.review.entity.ProductReview;
 import com.shopio.review.repository.ProductReviewRepository;
-import com.shopio.review.service.impl.ProductReviewServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,7 +39,7 @@ class ProductReviewServiceTest {
     public static final String updatedRating = "4";
 
     @InjectMocks
-    private ProductReviewServiceImpl productReviewService;
+    private ProductReviewService productReviewService;
 
     @Mock
     private ProductReviewRepository productReviewRepository;
@@ -90,7 +90,7 @@ class ProductReviewServiceTest {
     }
 
     @Test
-    void shouldUpdateProductReviewComment(){
+    void shouldUpdateProductReviewComment() throws ReviewNotFoundException, ReviewNotBelongToProductException, Exception{
         //given
         String updateField = "comment";
         ProductReview existingReview = new ProductReview(reviewId, productId, userId, initialComment, initialRating);
@@ -114,7 +114,7 @@ class ProductReviewServiceTest {
     }
 
     @Test
-    void shouldUpdateProductReviewRating() {
+    void shouldUpdateProductReviewRating() throws ReviewNotFoundException, ReviewNotBelongToProductException, Exception{
         //given
         String updateField = "rating";
         ProductReview existingReview = new ProductReview(reviewId, productId, userId, initialComment, initialRating);
@@ -136,7 +136,7 @@ class ProductReviewServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUpdatingInvalidField() {
+    void shouldThrowExceptionWhenUpdatingInvalidField(){
         //given
         String updateField = "invalidField";
         String newValue = "updated value";
@@ -150,7 +150,7 @@ class ProductReviewServiceTest {
     }
 
     @Test
-    void getAllProductReviews() {
+    void getAllProductReviews(){
         //given
         List<ProductReview> productReviews = new ArrayList<>();
         productReviews.add(new ProductReview(reviewId, productId, userId, initialComment, "5"));
@@ -187,7 +187,7 @@ class ProductReviewServiceTest {
     }
 
     @Test
-    void deleteProductReview() {
+    void deleteProductReview(){
         //given
         ProductReview expectedReview = new ProductReview(reviewId, productId, userId, initialComment, initialRating);
 

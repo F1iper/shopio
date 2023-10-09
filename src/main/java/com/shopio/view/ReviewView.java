@@ -45,11 +45,18 @@ public class ReviewView extends Div implements BeforeEnterObserver {
         }
     }
 
-    private void updateReviewGrid(List<ProductReview> reviews){
-        // TODO: 10/8/23 it doesnt fill the grid, yet
-        Grid<ProductReview> reviewGrid = (Grid<ProductReview>) getChildren().filter(c -> c instanceof Grid).findFirst().orElse(null);
+    private void updateReviewGrid(List<ProductReview> reviews) {
+        Grid<ProductReview> reviewGrid = getReviewGrid();
         if (reviewGrid != null) {
             reviewGrid.setItems(reviews);
         }
+    }
+
+    private Grid<ProductReview> getReviewGrid() {
+        return this.getChildren()
+                .filter(c -> c instanceof Grid)
+                .map(c -> (Grid<ProductReview>) c)
+                .findFirst()
+                .orElse(null);
     }
 }
