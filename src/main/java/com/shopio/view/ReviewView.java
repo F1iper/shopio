@@ -59,4 +59,5 @@ public class ReviewView extends Div implements BeforeEnterObserver {
                 .findFirst()
                 .orElse(null);
     }
+
 }
