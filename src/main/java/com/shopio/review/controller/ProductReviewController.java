@@ -34,7 +34,7 @@ public class ProductReviewController {
 
     @PostMapping("/create/{productId}")
     public ResponseEntity<ProductReview> createProductReview(
-            @PathVariable String productId,
+            @PathVariable Long productId,
             @RequestBody ProductReview productReview){
         try {
             productReview.setProductId(productId);
@@ -51,7 +51,7 @@ public class ProductReviewController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductReview> getReviewById(@PathVariable String id){
+    public ResponseEntity<ProductReview> getReviewById(@PathVariable Long id){
         Optional<ProductReview> review = productReviewService.getProductReviewById(id);
         return review.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -59,8 +59,8 @@ public class ProductReviewController {
 
     @PatchMapping("/{productId}/{reviewId}/rating")
     public ResponseEntity<ProductReview> updateProductRating(
-            @PathVariable String productId,
-            @PathVariable String reviewId,
+            @PathVariable Long productId,
+            @PathVariable Long reviewId,
             @RequestBody Map<String, String> requestMap) throws ReviewNotFoundException, ReviewNotBelongToProductException, Exception{
         String newRating = requestMap.get("newRating");
         ProductReview updatedReview = productReviewService.updateProductReview(productId, reviewId, "rating", newRating);
@@ -74,8 +74,8 @@ public class ProductReviewController {
 
     @PatchMapping("/{productId}/{reviewId}/comment")
     public ResponseEntity<ProductReview> updateProductComment(
-            @PathVariable String productId,
-            @PathVariable String reviewId,
+            @PathVariable Long productId,
+            @PathVariable Long reviewId,
             @RequestBody Map<String, String> requestMap) throws ReviewNotFoundException, ReviewNotBelongToProductException, Exception{
         String newComment = requestMap.get("newComment");
         ProductReview updatedReview = productReviewService.updateProductReview(productId, reviewId, "comment", newComment);
@@ -87,7 +87,7 @@ public class ProductReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable String id){
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id){
         productReviewService.deleteProductReview(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

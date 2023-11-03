@@ -1,5 +1,11 @@
 package com.shopio.product.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,19 +14,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(collection = "products")
+@Entity
 public class Product {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotEmpty
     @Size(min = 2, max = 255, message = "Product name must be between 2 and 255 characters")
@@ -38,7 +42,7 @@ public class Product {
     @Max(10000)
     private int amount;
 
-    @Field("category")
+    @Enumerated(value = EnumType.STRING)
     private Category category;
 
 }

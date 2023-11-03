@@ -7,6 +7,7 @@ import com.shopio.product.entity.Product;
 import com.shopio.product.repository.ProductRepository;
 import com.shopio.review.entity.ProductReview;
 import com.shopio.review.repository.ProductReviewRepository;
+import com.shopio.review.service.impl.ProductReviewServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,16 +31,16 @@ import static org.mockito.Mockito.when;
 
 class ProductReviewServiceTest {
 
-    public static final String productId = "1";
-    public static final String reviewId = "111";
-    public static final String userId = "999";
+    public static final Long productId = 1L;
+    public static final Long reviewId = 111L;
+    public static final Long userId = 999L;
     public static final String initialComment = "initial review";
     public static final String initialRating = "3";
     public static final String updatedComment = "updated review";
     public static final String updatedRating = "4";
 
     @InjectMocks
-    private ProductReviewService productReviewService;
+    private ProductReviewServiceImpl productReviewService;
 
     @Mock
     private ProductReviewRepository productReviewRepository;
@@ -75,10 +76,10 @@ class ProductReviewServiceTest {
     @Test
     void shouldNotCreateProductReviewWithNonExistingProductAndThrowException(){
         //given
-        Product product = new Product("2", "smartphone", "smart phone", 800, 5, Category.ELECTRONICS);
+        Product product = new Product(2L, "smartphone", "smart phone", 800, 5, Category.ELECTRONICS);
         ProductReview productReview = new ProductReview(reviewId, product.getId(), userId, initialComment, initialRating);
 
-        when(productRepository.findById("2")).thenReturn(Optional.empty());
+        when(productRepository.findById(2L)).thenReturn(Optional.empty());
         when(productReviewRepository.save(productReview)).thenReturn(productReview);
 
         //when and then

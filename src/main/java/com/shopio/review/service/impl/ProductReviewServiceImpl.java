@@ -17,12 +17,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-class ProductReviewServiceImpl implements ProductReviewService {
+public class ProductReviewServiceImpl implements ProductReviewService {
     private final ProductReviewRepository productReviewRepository;
     private final ProductRepository productRepository;
 
     @Override
-    public ProductReview createProductReview(String productId, ProductReview productReview){
+    public ProductReview createProductReview(Long productId, ProductReview productReview){
         try {
             Product existingProduct = productRepository.findById(productId)
                     .orElseThrow(() -> new RuntimeException("Product with ID: " + productId + " does not exist"));
@@ -40,7 +40,7 @@ class ProductReviewServiceImpl implements ProductReviewService {
     }
 
     @Override
-    public ProductReview updateProductReview(String productId, String reviewId, String updateField, String newValue){
+    public ProductReview updateProductReview(Long productId, Long reviewId, String updateField, String newValue){
         try {
             Optional<ProductReview> optionalProductReview = productReviewRepository.findById(reviewId);
             if (optionalProductReview.isPresent()) {
@@ -75,19 +75,19 @@ class ProductReviewServiceImpl implements ProductReviewService {
     }
 
     @Override
-    public Optional<ProductReview> getProductReviewById(String id){
+    public Optional<ProductReview> getProductReviewById(Long id){
         return productReviewRepository.findById(id);
     }
 
     @Override
-    public void deleteProductReview(String id){
+    public void deleteProductReview(Long id){
         if (productReviewRepository.existsById(id)) {
             productReviewRepository.deleteById(id);
         }
     }
 
     @Override
-    public List<ProductReview> getReviewsByProductId(String productId){
+    public List<ProductReview> getReviewsByProductId(Long productId){
         try {
             List<ProductReview> reviews = productReviewRepository.findByProductId(productId);
             log.info("Retrieved {} reviews for product ID [{}].", reviews.size(), productId);

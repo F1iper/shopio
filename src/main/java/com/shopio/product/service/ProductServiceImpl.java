@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-final class ProductServiceImpl implements ProductService {
+class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
@@ -21,7 +21,7 @@ final class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> getProductById(String productId){
+    public Optional<Product> getProductById(Long productId){
         return productRepository.findById(productId);
     }
 
@@ -31,7 +31,7 @@ final class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> updateProduct(String productId, Product product){
+    public Optional<Product> updateProduct(Long productId, Product product){
         if (! productRepository.existsById(productId)) {
             return Optional.empty();
         }
@@ -49,7 +49,7 @@ final class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductById(String productId){
+    public void deleteProductById(Long productId){
         productRepository.deleteById(productId);
     }
 }

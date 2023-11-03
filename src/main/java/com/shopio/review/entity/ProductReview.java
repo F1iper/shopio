@@ -1,22 +1,26 @@
 package com.shopio.review.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(collection = "reviews")
+@Entity
 public class ProductReview {
+
     @Id
-    private String id;
-    private String productId;
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Long productId;
+    private Long userId;
     private String comment;
     private String rating;
 

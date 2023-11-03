@@ -9,15 +9,15 @@ import java.util.Optional;
 
 public interface ProductReviewService {
 
-    ProductReview createProductReview(String productId, ProductReview productReview);
+    ProductReview createProductReview(Long productId, ProductReview productReview);
 
-    ProductReview updateProductReview(String productId, String reviewId, String updateField, String newValue) throws Exception, ReviewNotBelongToProductException, ReviewNotFoundException;
+    ProductReview updateProductReview(Long productId, Long reviewId, String updateField, String newValue) throws Exception, ReviewNotBelongToProductException, ReviewNotFoundException;
 
     List<ProductReview> getAllProductReviews();
 
-    Optional<ProductReview> getProductReviewById(String id);
+    Optional<ProductReview> getProductReviewById(Long id);
 
-    void deleteProductReview(String id);
+    void deleteProductReview(Long id);
 
-    List<ProductReview> getReviewsByProductId(String id);
+    List<ProductReview> getReviewsByProductId(Long id);
 }

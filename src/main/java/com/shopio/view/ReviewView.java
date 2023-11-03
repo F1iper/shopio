@@ -18,10 +18,10 @@ import java.util.List;
 @PermitAll
 public class ReviewView extends Div implements BeforeEnterObserver {
 
-    private String productId;
+    private Long productId;
     private final ProductReviewService productReviewService;
 
-    public ReviewView(ProductReviewService productReviewService){
+    public ReviewView(ProductReviewService productReviewService) {
         this.productReviewService = productReviewService;
 
         H1 title = new H1("Product Reviews");
@@ -34,8 +34,8 @@ public class ReviewView extends Div implements BeforeEnterObserver {
     }
 
     @Override
-    public void beforeEnter(BeforeEnterEvent event){
-        productId = event.getRouteParameters().get("productId").orElse(null);
+    public void beforeEnter(BeforeEnterEvent event) {
+        productId = Long.valueOf(event.getRouteParameters().get("productId").orElse(null));
 
         if (productId == null) {
             event.rerouteTo("error");

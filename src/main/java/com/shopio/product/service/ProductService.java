@@ -10,15 +10,15 @@ public interface ProductService {
 
     List<Product> getAllProducts();
 
-    Optional<Product> getProductById(String productId);
+    Optional<Product> getProductById(Long productId);
 
     Product createProduct(Product product);
 
-    Optional<Product> updateProduct(String productId, Product product);
+    Optional<Product> updateProduct(Long productId, Product product);
 
     void deleteProducts(Set<Product> toDeleteSet);
 
     List<Product> findByName(String value);
 
-    void deleteProductById(String productId);
+    void deleteProductById(Long productId);
 }

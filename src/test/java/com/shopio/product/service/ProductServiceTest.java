@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,17 +30,17 @@ class ProductServiceTest {
     private ProductRepository productRepository;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         productRepository = mock(ProductRepository.class);
         productService = new ProductServiceImpl(productRepository);
     }
 
     @Test
-    void shouldGetListOfExistingProductsFromDatabase(){
+    void shouldGetListOfExistingProductsFromDatabase() {
         //given
         List<Product> products = new ArrayList<>();
-        products.add(new Product("1", "product1", "description1", 20.22, 200, Category.ELECTRONICS));
-        products.add(new Product("2", "product2", "description2", 10.99, 4000, Category.CLOTHING));
+        products.add(new Product(1L, "product1", "description1", 20.22, 200, Category.ELECTRONICS));
+        products.add(new Product(2L, "product2", "description2", 10.99, 4000, Category.CLOTHES));
 
         when(productRepository.findAll()).thenReturn(products);
 
@@ -49,7 +48,7 @@ class ProductServiceTest {
         List<Product> resultList = productService.getAllProducts();
 
         //then
-        assertEquals(2, resultList.size(), "Result list size is different");
+        assertEquals(2L, resultList.size(), "Result list size is different");
         assertEquals("product1", products.get(0).getName(), "Product name is different");
         assertEquals(10.99, products.get(1).getPrice(), "Price is different");
 
@@ -57,14 +56,14 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldGetProductByIdFromDatabase(){
+    void shouldGetProductByIdFromDatabase() {
         //given
-        Product product = new Product("3", "product3", "description3", 9.99, 10, Category.BOOKS);
+        Product product = new Product(3L, "product3", "description3", 9.99, 10, Category.BOOKS);
 
-        when(productRepository.findById("3")).thenReturn(Optional.of(product));
+        when(productRepository.findById(3L)).thenReturn(Optional.of(product));
 
         //when
-        Optional<Product> result = productService.getProductById("3");
+        Optional<Product> result = productService.getProductById(3L);
 
         //then
         assertAll(
@@ -72,13 +71,13 @@ class ProductServiceTest {
                 () -> assertEquals("description3", result.get().getDescription(), "Description should match")
         );
 
-        verify(productRepository).findById("3");
+        verify(productRepository).findById(3L);
     }
 
     @Test
-    void shouldCreateProductWithProperProperties(){
+    void shouldCreateProductWithProperProperties() {
         //given
-        Product product = new Product("4", "product4", "description4", 250, 10, Category.ELECTRONICS);
+        Product product = new Product(4L, "product4", "description4", 250, 10, Category.ELECTRONICS);
 
         when(productRepository.save(product)).thenReturn(product);
 
@@ -96,9 +95,9 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldUpdateProductWithValidProductAndReturnsUpdatedProduct(){
+    void shouldUpdateProductWithValidProductAndReturnsUpdatedProduct() {
         //given
-        String productId = "1";
+        Long productId = 1L;
         Product updatedProduct = new Product(productId, "Updated Product", "Updated Description", 19.99, 5, Category.BOOKS);
 
         when(productRepository.existsById(productId)).thenReturn(true);
@@ -116,9 +115,9 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldDeleteProductWithNonExistentProductIdAndDoesNotDelete(){
+    void shouldDeleteProductWithNonExistentProductIdAndDoesNotDelete() {
         //given
-        final String productId = "5";
+        final Long productId = 5L;
         when(productRepository.existsById(productId)).thenReturn(false);
 
         //when

@@ -54,7 +54,7 @@ public class ProductDetailDialog extends Dialog {
     }
 
 
-    private void navigateToReviews(String path){
+    private void navigateToReviews(Long path){
         UI.getCurrent().navigate("product/reviews/" + path);
     }
 }
