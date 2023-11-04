@@ -7,6 +7,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,11 +20,10 @@ import jakarta.annotation.security.RolesAllowed;
 
 @Route("")
 @PageTitle("Main View")
-@RolesAllowed("ADMIN")
+@RolesAllowed({"ADMIN", "USER"})
 final class MainView extends VerticalLayout {
-    // TODO: 10/8/23 after logging in -> image is shown 
+    // TODO: 10/8/23 after logging in -> image is shown
     private final ProductService productService;
-    private LogoLayout logoLayout;
     private TextField filterField;
     private Grid<Product> grid;
 
@@ -35,7 +35,6 @@ final class MainView extends VerticalLayout {
     }
 
     private void initializeComponents(){
-        logoLayout = new LogoLayout();
         filterField = new TextField();
         grid = createProductGrid();
     }
@@ -43,7 +42,8 @@ final class MainView extends VerticalLayout {
     private void configureLayout(){
         setSizeFull();
         setAlignItems(Alignment.CENTER);
-        add(logoLayout, createToolbar(), grid);
+        Image logoImage = new Image("images/logo.png", "logo");
+        add(logoImage, createToolbar(), grid);
     }
 
     private Grid<Product> createProductGrid(){

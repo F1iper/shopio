@@ -35,7 +35,7 @@ import static com.shopio.notification.Constants.PRODUCT_SAVED;
 class CreateProductView extends VerticalLayout {
 
     private final ProductService productService;
-    private LogoLayout logoLayout;
+    private LogoView logoView;
     private TextField nameField;
     private TextField descriptionField;
     private TextField priceField;
@@ -54,7 +54,7 @@ class CreateProductView extends VerticalLayout {
         Component buttonLayout = createButtonLayout();
         addSaveAndCancelListeners();
 
-        add(logoLayout, productForm, buttonLayout);
+        add(logoView, productForm, buttonLayout);
     }
 
     private void setupMainLayout(){
@@ -63,7 +63,7 @@ class CreateProductView extends VerticalLayout {
     }
 
     private void initializeComponents(){
-        this.logoLayout = new LogoLayout();
+        this.logoView = new LogoView();
 
         nameField = new TextField("Product name");
         descriptionField = new TextField("Description");

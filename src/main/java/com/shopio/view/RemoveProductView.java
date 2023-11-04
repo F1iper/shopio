@@ -25,7 +25,7 @@ import java.util.Set;
 final class RemoveProductView extends VerticalLayout {
 
     private final ProductService productService;
-    private LogoLayout logoLayout;
+    private LogoView logoView;
     private Grid<Product> grid;
     private Set<Product> selected;
     private Button remove;
@@ -89,7 +89,7 @@ final class RemoveProductView extends VerticalLayout {
     }
 
     private void initializeComponents(){
-        logoLayout = new LogoLayout();
+        logoView = new LogoView();
         grid = createProductGrid();
         remove = new Button("Remove");
         cancel = new Button("Cancel");
@@ -100,7 +100,7 @@ final class RemoveProductView extends VerticalLayout {
     private void configureLayout(){
         setSizeFull();
         setAlignItems(Alignment.CENTER);
-        add(logoLayout, createToolbar(), grid);
+        add(logoView, createToolbar(), grid);
     }
 
     private Component createToolbar(){
