@@ -11,29 +11,23 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class ProductDetailDialog extends Dialog {
+
+    private TextField nameField;
+    private TextArea descriptionField;
+    private TextField priceField;
+    private TextField inventoryField;
 
     public ProductDetailDialog(Product product){
         setCloseOnEsc(true);
         setCloseOnOutsideClick(true);
         setWidth("400px");
 
-        TextField nameField = new TextField("Name");
-        nameField.setValue(product.getName());
-        nameField.setReadOnly(true);
-
-        TextArea descriptionField = new TextArea("Description");
-        descriptionField.setValue(product.getDescription());
-        descriptionField.setReadOnly(true);
-
-        TextField priceField = new TextField("Price");
-        priceField.setValue(String.valueOf(product.getPrice()));
-        priceField.setReadOnly(true);
-
-        TextField inventoryField = new TextField("In stock");
-        inventoryField.setValue(String.valueOf(product.getAmount()));
-        inventoryField.setReadOnly(true);
+        initializeComponents();
+        configureComponents(product);
 
         Button closeButton = new Button(new Icon(VaadinIcon.CLOSE), e -> close());
 
@@ -53,8 +47,27 @@ public class ProductDetailDialog extends Dialog {
         add(reviewsLayout);
     }
 
+    private void configureComponents(Product product) {
+        nameField.setValue(product.getName());
+        nameField.setReadOnly(true);
+        descriptionField.setValue(product.getDescription());
+        descriptionField.setReadOnly(true);
+        priceField.setValue(String.valueOf(product.getPrice()));
+        priceField.setReadOnly(true);
+        inventoryField.setValue(String.valueOf(product.getAmount()));
+        inventoryField.setReadOnly(true);
+    }
 
-    private void navigateToReviews(Long path){
-        UI.getCurrent().navigate("product/reviews/" + path);
+    private void initializeComponents() {
+        nameField = new TextField("Name");
+        descriptionField = new TextArea("Description");
+        priceField = new TextField("Price");
+        inventoryField = new TextField("In stock");
+    }
+
+
+    private void navigateToReviews(Long productId){
+        UI.getCurrent().navigate("product/reviews/" + productId);
+        close();
     }
 }
