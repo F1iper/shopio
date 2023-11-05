@@ -9,6 +9,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class ProductDetailDialog extends Dialog {
     private TextField inventoryField;
 
     public ProductDetailDialog(Product product){
+        VerticalLayout mainLayout = new VerticalLayout();
         setCloseOnEsc(true);
         setCloseOnOutsideClick(true);
         setWidth("400px");
@@ -29,33 +31,31 @@ public class ProductDetailDialog extends Dialog {
         initializeComponents();
         configureComponents(product);
 
-        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE), e -> close());
-
-        HorizontalLayout exitLayout = new HorizontalLayout();
-        exitLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        exitLayout.add(closeButton);
-
+        Button closeButton = new Button("Close", e -> close());
         Button viewReviewsButton = new Button("View Reviews", e -> navigateToReviews(product.getId()));
         viewReviewsButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
 
-        add(exitLayout, nameField, descriptionField, priceField, inventoryField);
-
         HorizontalLayout reviewsLayout = new HorizontalLayout();
         reviewsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        reviewsLayout.add(viewReviewsButton);
+        reviewsLayout.add(viewReviewsButton, closeButton);
 
-        add(reviewsLayout);
+        mainLayout.add(nameField, descriptionField, priceField, inventoryField, reviewsLayout);
+        add(mainLayout);
     }
 
     private void configureComponents(Product product) {
         nameField.setValue(product.getName());
         nameField.setReadOnly(true);
+        nameField.setWidthFull();
         descriptionField.setValue(product.getDescription());
         descriptionField.setReadOnly(true);
+        descriptionField.setWidthFull();
         priceField.setValue(String.valueOf(product.getPrice()));
         priceField.setReadOnly(true);
+        priceField.setWidthFull();
         inventoryField.setValue(String.valueOf(product.getAmount()));
         inventoryField.setReadOnly(true);
+        inventoryField.setWidthFull();
     }
 
     private void initializeComponents() {
