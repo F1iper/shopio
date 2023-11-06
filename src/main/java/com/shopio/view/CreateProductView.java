@@ -13,6 +13,8 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
@@ -32,22 +34,25 @@ import static com.shopio.notification.Constants.PRODUCT_SAVED;
 @PageTitle("Create product")
 @Route("product/create")
 @PermitAll
-class CreateProductView extends VerticalLayout {
+class CreateProductView extends FormLayout {
 
     private final ProductService productService;
-    private LogoView logoView;
-    private TextField nameField;
-    private TextField descriptionField;
-    private TextField priceField;
-    private TextField amountField;
+    private final LogoView logoView = new LogoView();
+    private final TextField nameField = new TextField("Product name");
+    private final TextField descriptionField = new TextField("Description");
+    private final TextField priceField = new TextField("Price");
+    private final TextField amountField = new TextField("Amount");
     private ComboBox<Category> categoryComboBox;
     private Button saveButton;
     private Button cancelButton;
+    private final Binder<Product> productBinder = new BeanValidationBinder<>(Product.class);
 
     CreateProductView(ProductService productService){
         this.productService = productService;
-        setupMainLayout();
+        productBinder.bind(nameField, product -> {
+        });
 
+        setWidthFull();
         initializeComponents();
 
         Component productForm = createProductForm();
@@ -57,19 +62,8 @@ class CreateProductView extends VerticalLayout {
         add(logoView, productForm, buttonLayout);
     }
 
-    private void setupMainLayout(){
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setAlignItems(Alignment.CENTER);
-    }
 
     private void initializeComponents(){
-        this.logoView = new LogoView();
-
-        nameField = new TextField("Product name");
-        descriptionField = new TextField("Description");
-        priceField = new TextField("Price");
-        amountField = new TextField("Amount");
-
         categoryComboBox = new ComboBox<>("Category");
         categoryComboBox.setItems(Category.values());
         categoryComboBox.setItemLabelGenerator(Category::name);
@@ -127,7 +121,6 @@ class CreateProductView extends VerticalLayout {
         cancelButton = new Button("Cancel");
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
 
-        horizontalLayout.setJustifyContentMode(JustifyContentMode.START);
         horizontalLayout.add(saveButton, cancelButton);
 
         return horizontalLayout;
