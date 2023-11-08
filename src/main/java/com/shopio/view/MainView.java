@@ -3,6 +3,7 @@ package com.shopio.view;
 import com.shopio.product.entity.Product;
 import com.shopio.product.service.ProductService;
 import com.shopio.view.dialog.ProductDetailDialog;
+import com.shopio.view.layout.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -18,10 +19,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 
-@Route("")
+@Route(layout= MainLayout.class)
 @PageTitle("Main View")
 @RolesAllowed({"ADMIN", "USER"})
-final class MainView extends VerticalLayout {
+public final class MainView extends VerticalLayout {
     // TODO: 10/8/23 after logging in -> image is shown
     private final ProductService productService;
     private TextField filterField;

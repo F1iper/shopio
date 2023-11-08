@@ -1,6 +1,7 @@
 package com.shopio.product.service;
 
 import com.shopio.product.entity.Product;
+import com.vaadin.flow.component.Component;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface ProductService {
     List<Product> findByName(String value);
 
     void deleteProductById(Long productId);
+
+    long countProducts();
 }

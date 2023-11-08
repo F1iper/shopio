@@ -2,6 +2,7 @@ package com.shopio.product.service;
 
 import com.shopio.product.entity.Product;
 import com.shopio.product.repository.ProductRepository;
+import com.vaadin.flow.component.Component;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,10 @@ class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProductById(Long productId){
         productRepository.deleteById(productId);
+    }
+
+    @Override
+    public long countProducts() {
+        return productRepository.findAll().size();
     }
 }

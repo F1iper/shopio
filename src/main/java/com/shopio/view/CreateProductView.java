@@ -49,8 +49,6 @@ class CreateProductView extends FormLayout {
 
     CreateProductView(ProductService productService){
         this.productService = productService;
-        productBinder.bind(nameField, product -> {
-        });
 
         setWidthFull();
         initializeComponents();

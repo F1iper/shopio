@@ -1,35 +1,42 @@
 package com.shopio.view.layout;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Composite;
-import com.vaadin.flow.component.html.Div;
+import com.shopio.view.MainView;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.RouterLayout;
+import com.vaadin.flow.router.HighlightCondition;
+import com.vaadin.flow.router.HighlightConditions;
+import com.vaadin.flow.router.RouterLink;
 
 
-public class MainLayout extends Composite<Div> implements RouterLayout {
-
-    private VerticalLayout content = new VerticalLayout();
+public class MainLayout extends AppLayout {
 
     public MainLayout() {
-        getContent().add(content);
-        getContent().setSizeFull();
-
-        // Add common components to your layout, like headers, navigation menus, etc.
-        // For example, you can add a header component:
-        content.add(createHeader());
-
-        // You can also define the layout structure for navigation menus or other common elements here.
+        createHeader();
+        createDrawer();
     }
 
-    public void showView(Component view) {
-        content.removeAll();
-        content.add(view);
+    private void createHeader() {
+        H1 logo = new H1("Shopio");
+        logo.addClassNames("text-l", "m-m");
+        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        header.expand(logo);
+        header.setWidthFull();
+        header.addClassNames("py-0", "px-m");
+
+        addToNavbar(header);
     }
 
-    private Component createHeader() {
-        // Define your header component here
-        // For example, a navigation menu, logo, and other header elements
-        return new Div(); // Replace with your actual header component
+    private void createDrawer() {
+        RouterLink listView = new RouterLink("List", MainView.class);
+        listView.setHighlightCondition(HighlightConditions.sameLocation());
+
+        addToDrawer(new VerticalLayout(
+                listView
+        ));
     }
 }
