@@ -1,5 +1,6 @@
 package com.shopio.review.service.impl;
 
+import com.shopio.exception.ResourceNotFoundException;
 import com.shopio.exception.ReviewNotBelongToProductException;
 import com.shopio.exception.ReviewNotFoundException;
 import com.shopio.product.entity.Product;
@@ -22,51 +23,49 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     private final ProductRepository productRepository;
 
     @Override
-    public ProductReview createProductReview(Long productId, ProductReview productReview){
-        try {
-            Product existingProduct = productRepository.findById(productId)
-                    .orElseThrow(() -> new RuntimeException("Product with ID: " + productId + " does not exist"));
+    public ProductReview createProductReview(Long productId, ProductReview productReview) {
+        Product existingProduct = productRepository.findById(productId)
+                .orElse(null);
 
-            productReview.setProductId(existingProduct.getId());
-            ProductReview createdReview = productReviewRepository.save(productReview);
-
-            log.info("Created a new review with ID [{}] for product [{}].", createdReview.getId(), productId);
-
-            return createdReview;
-        } catch (Exception e) {
-            log.error("Error creating a review for product ID [{}].", productId, e);
-            throw new RuntimeException("An unexpected error occurred while creating the product review.");
+        if (existingProduct == null) {
+            log.error("Product with ID: {} does not exist.", productId);
+            // TODO: 11/9/2023 handle exception instead throw null
+            return null;
         }
+
+        productReview.setProduct(existingProduct);
+        ProductReview createdReview = productReviewRepository.save(productReview);
+
+        log.info("Created a new review with ID [{}] for product [{}].", createdReview.getId(), productId);
+
+        return createdReview;
     }
 
     @Override
-    public ProductReview updateProductReview(Long productId, Long reviewId, String updateField, String newValue){
+    public ProductReview updateProductReview(Long productId, Long reviewId, String updateField, String newValue) {
         try {
-            Optional<ProductReview> optionalProductReview = productReviewRepository.findById(reviewId);
-            if (optionalProductReview.isPresent()) {
-                ProductReview existingReview = optionalProductReview.get();
+            ProductReview existingReview = productReviewRepository.findById(reviewId)
+                    .orElseThrow(() -> new ReviewNotFoundException("Review with ID: [" + reviewId + "] not found."));
 
-                if (! productId.equals(existingReview.getProductId())) {
-                    throw new ReviewNotBelongToProductException("Review with ID [" + reviewId + "] does not belong to specific product with ID [" + productId + "].");
-                }
-                if ("comment".equalsIgnoreCase(updateField)) {
-                    existingReview.setComment(newValue);
-                } else if ("rating".equalsIgnoreCase(updateField)) {
-                    existingReview.setRating(newValue);
-                } else {
-                    throw new IllegalArgumentException("Invalid updateField: " + updateField);
-                }
-
-                ProductReview updatedReview = productReviewRepository.save(existingReview);
-                log.info("Updated {} for review ID [{}].", updateField, reviewId);
-                return updatedReview;
-            } else {
-                throw new ReviewNotFoundException("Review with ID: [" + reviewId + "] not found.");
+            if (!productId.equals(existingReview.getProduct().getId())) {
+                throw new ReviewNotBelongToProductException("Review with ID [" + reviewId + "] does not belong to a specific product with ID [" + productId + "].");
             }
-        } catch (ReviewNotBelongToProductException | ReviewNotFoundException exception) {
+
+            if ("comment".equalsIgnoreCase(updateField)) {
+                existingReview.setComment(newValue);
+            } else if ("rating".equalsIgnoreCase(updateField)) {
+                existingReview.setRating(newValue);
+            } else {
+                throw new IllegalArgumentException("Invalid updateField: " + updateField);
+            }
+
+            ProductReview updatedReview = productReviewRepository.save(existingReview);
+            log.info("Updated {} for review ID [{}].", updateField, reviewId);
+            return updatedReview;
+        } catch (ReviewNotBelongToProductException | ReviewNotFoundException | IllegalArgumentException exception) {
             log.error("Error updating product review.", exception);
+            return null;
         }
-        throw new RuntimeException("An unexpected error occurred.");
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.shopio.review.controller;
 
 import com.shopio.exception.ReviewNotBelongToProductException;
 import com.shopio.exception.ReviewNotFoundException;
+import com.shopio.product.entity.Product;
+import com.shopio.product.service.ProductService;
 import com.shopio.review.entity.ProductReview;
 import com.shopio.review.service.ProductReviewService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductReviewController {
     private final ProductReviewService productReviewService;
+    private final ProductService productService;
 
     @GetMapping
     public ResponseEntity<List<ProductReview>> getAllReviews(){
@@ -37,7 +40,8 @@ public class ProductReviewController {
             @PathVariable Long productId,
             @RequestBody ProductReview productReview){
         try {
-            productReview.setProductId(productId);
+            Product product = productService.getProductById(productId).orElse(null);
+            productReview.setProduct(product);
             ProductReview createdReview = productReviewService.createProductReview(productId, productReview);
 
             if (createdReview != null) {

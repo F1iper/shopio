@@ -28,6 +28,7 @@ public class DashboardView extends VerticalLayout {
     }
 
     private Component getProductsChart() {
-        return null;
+        // TODO: 11/9/2023 implement return
+        return new VerticalLayout();
     }
 }

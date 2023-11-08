@@ -1,11 +1,15 @@
 package com.shopio.product.entity;
 
+import com.shopio.review.entity.ProductReview;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -14,6 +18,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
+
+import javax.annotation.Nullable;
+import java.util.LinkedList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -41,6 +50,13 @@ public class Product {
     @Min(0)
     @Max(10000)
     private int amount;
+
+    @Nullable
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductReview> reviews = new LinkedList<>();
+
+    @Formula("(SELECT COUNT(*) FROM product_review pr WHERE pr.product_id = id)")
+    private int countReviews;
 
     @Enumerated(value = EnumType.STRING)
     private Category category;

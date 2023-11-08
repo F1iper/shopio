@@ -1,5 +1,6 @@
 package com.shopio.view.layout;
 
+import com.shopio.view.DashboardView;
 import com.shopio.view.MainView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -32,11 +33,12 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
-        RouterLink listView = new RouterLink("List", MainView.class);
+        RouterLink listView = new RouterLink("Main view", MainView.class);
         listView.setHighlightCondition(HighlightConditions.sameLocation());
 
         addToDrawer(new VerticalLayout(
-                listView
+                listView,
+                new RouterLink("Dashboard", DashboardView.class)
         ));
     }
 }
