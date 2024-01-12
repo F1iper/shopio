@@ -3,7 +3,6 @@ package com.shopio.view;
 import com.shopio.product.entity.Product;
 import com.shopio.product.service.ProductService;
 import com.shopio.view.dialog.ProductDetailDialog;
-import com.shopio.view.dialog.TestDialog;
 import com.shopio.view.layout.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -28,11 +27,9 @@ public final class MainView extends VerticalLayout {
     private final ProductService productService;
     private TextField filterField;
     private Grid<Product> grid;
-    private Button testButton = new Button("testDialog", event -> this.openTestDialog());
 
     public MainView(ProductService productService){
         this.productService = productService;
-        add(testButton);
         initializeComponents();
         configureLayout();
         loadDataFromDb();
@@ -67,11 +64,6 @@ public final class MainView extends VerticalLayout {
     private void openProductDetailDialog(Product product){
         ProductDetailDialog dialog = new ProductDetailDialog(product);
         dialog.open();
-    }
-
-    private void openTestDialog() {
-        TestDialog testDialog = new TestDialog();
-        testDialog.open();
     }
 
     private Component createToolbar(){
