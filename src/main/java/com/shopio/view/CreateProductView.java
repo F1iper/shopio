@@ -6,15 +6,15 @@ import com.shopio.product.service.ProductService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
@@ -37,35 +37,63 @@ import static com.shopio.notification.Constants.PRODUCT_SAVED;
 class CreateProductView extends FormLayout {
 
     private final ProductService productService;
-    private final LogoView logoView = new LogoView();
+    private LogoView logoView;
     private final TextField nameField = new TextField("Product name");
     private final TextField descriptionField = new TextField("Description");
     private final TextField priceField = new TextField("Price");
     private final TextField amountField = new TextField("Amount");
-    private ComboBox<Category> categoryComboBox;
+    private Select<Category> categorySelect;
     private Button saveButton;
     private Button cancelButton;
-    private final Binder<Product> productBinder = new BeanValidationBinder<>(Product.class);
 
     CreateProductView(ProductService productService){
         this.productService = productService;
 
         setWidthFull();
+        configureLayout();
+        logoView = new LogoView();
+        categorySelect = createCategorySelect();
+        saveButton = createButton("Save", ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+        cancelButton = createButton("Cancel", ButtonVariant.LUMO_TERTIARY);
+
         initializeComponents();
-
-        Component productForm = createProductForm();
-        Component buttonLayout = createButtonLayout();
         addSaveAndCancelListeners();
-
-        add(logoView, productForm, buttonLayout);
     }
 
+    private void configureLayout() {
+    setSizeFull();
+
+    VerticalLayout centerLayout = new VerticalLayout();
+    centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+    centerLayout.add(logoView);
+
+    add(centerLayout, createProductForm(), createButtonLayout());
+}
+
+    private HorizontalLayout createButtonLayout() {
+        return new HorizontalLayout(saveButton, cancelButton);
+    }
 
     private void initializeComponents(){
-        categoryComboBox = new ComboBox<>("Category");
-        categoryComboBox.setItems(Category.values());
-        categoryComboBox.setItemLabelGenerator(Category::name);
-        categoryComboBox.setValue(Category.ELECTRONICS);
+        VerticalLayout centerLayout = new VerticalLayout();
+        centerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        centerLayout.add(logoView, createProductForm(), createButtonLayout());
+        add(centerLayout);
+        categorySelect.setValue(Category.ELECTRONICS);
+    }
+
+    private Select<Category> createCategorySelect() {
+        Select<Category> select = new Select<>();
+        select.setItems(Category.values());
+        select.setItemLabelGenerator(category -> category.name().toLowerCase());
+        return select;
+    }
+
+    private Button createButton(String text, ButtonVariant... variants) {
+        Button button = new Button(text);
+        button.addThemeVariants(variants);
+        return button;
     }
 
     private void addSaveAndCancelListeners(){
@@ -88,11 +116,10 @@ class CreateProductView extends FormLayout {
         Product product = new Product();
         product.setName(nameValue);
         product.setDescription(descriptionValue);
-
         product.setPrice(parseDouble(priceValue, ENTER_VALID_PRICE));
         product.setAmount(parseInt(amountValue, ENTER_VALID_AMOUNT));
 
-        product.setCategory(categoryComboBox.getValue());
+        product.setCategory(categorySelect.getValue());
 
         Set<ConstraintViolation<Product>> violations = validateProduct(product);
 
@@ -112,23 +139,11 @@ class CreateProductView extends FormLayout {
         }
     }
 
-    private Component createButtonLayout(){
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-
-        saveButton = new Button("Save");
-        cancelButton = new Button("Cancel");
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-
-        horizontalLayout.add(saveButton, cancelButton);
-
-        return horizontalLayout;
-    }
-
     private Component createProductForm(){
         FormLayout productForm = new FormLayout();
 
-        productForm.add(nameField, descriptionField, priceField, amountField, categoryComboBox);
-        return new VerticalLayout(productForm);
+        productForm.add(nameField, descriptionField, priceField, amountField, categorySelect);
+        return productForm;
     }
 
 

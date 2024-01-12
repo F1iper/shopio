@@ -7,6 +7,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -25,7 +26,6 @@ import java.util.Set;
 final class RemoveProductView extends VerticalLayout {
 
     private final ProductService productService;
-    private LogoView logoView;
     private Grid<Product> grid;
     private Set<Product> selected;
     private Button remove;
@@ -89,7 +89,6 @@ final class RemoveProductView extends VerticalLayout {
     }
 
     private void initializeComponents(){
-        logoView = new LogoView();
         grid = createProductGrid();
         remove = new Button("Remove");
         cancel = new Button("Cancel");
@@ -100,7 +99,9 @@ final class RemoveProductView extends VerticalLayout {
     private void configureLayout(){
         setSizeFull();
         setAlignItems(Alignment.CENTER);
-        add(logoView, createToolbar(), grid);
+        Image logoImage = new Image("images/logo.png", "logo");
+
+        add(logoImage, createToolbar(), grid);
     }
 
     private Component createToolbar(){
