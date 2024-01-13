@@ -8,6 +8,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -37,7 +39,6 @@ import static com.shopio.notification.Constants.PRODUCT_SAVED;
 class CreateProductView extends FormLayout {
 
     private final ProductService productService;
-    private LogoView logoView;
     private final TextField nameField = new TextField("Product name");
     private final TextField descriptionField = new TextField("Description");
     private final TextField priceField = new TextField("Price");
@@ -49,25 +50,29 @@ class CreateProductView extends FormLayout {
     CreateProductView(ProductService productService){
         this.productService = productService;
 
-        setWidthFull();
-        configureLayout();
-        logoView = new LogoView();
-        categorySelect = createCategorySelect();
         saveButton = createButton("Save", ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
         cancelButton = createButton("Cancel", ButtonVariant.LUMO_TERTIARY);
+        categorySelect = createCategorySelect();
+
+        setWidthFull();
+        configureLayout();
 
         initializeComponents();
         addSaveAndCancelListeners();
     }
 
     private void configureLayout() {
-    setSizeFull();
+        setSizeFull();
 
-    VerticalLayout centerLayout = new VerticalLayout();
-    centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
-    centerLayout.add(logoView);
+        Div centerLayout = new Div();
+        centerLayout.getStyle().set("text-align", "center");
 
-    add(centerLayout, createProductForm(), createButtonLayout());
+        Image logoImage = new Image("images/logo.png", "logo");
+        VerticalLayout logoLayout = new VerticalLayout();
+        logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        logoLayout.add(logoImage);
+
+        add(centerLayout, createProductForm(), createButtonLayout());
 }
 
     private HorizontalLayout createButtonLayout() {
@@ -75,10 +80,15 @@ class CreateProductView extends FormLayout {
     }
 
     private void initializeComponents(){
-        VerticalLayout centerLayout = new VerticalLayout();
-        centerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        Div centerLayout = new Div();
+        centerLayout.getStyle().set("text-align", "center");
 
-        centerLayout.add(logoView, createProductForm(), createButtonLayout());
+        VerticalLayout logoLayout = new VerticalLayout();
+        logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        Image logoImage = new Image("images/logo.png", "logo");
+        logoLayout.add(logoImage);
+
+        centerLayout.add(logoLayout, createProductForm(), createButtonLayout());
         add(centerLayout);
         categorySelect.setValue(Category.ELECTRONICS);
     }
@@ -139,9 +149,8 @@ class CreateProductView extends FormLayout {
         }
     }
 
-    private Component createProductForm(){
+    private FormLayout createProductForm() {
         FormLayout productForm = new FormLayout();
-
         productForm.add(nameField, descriptionField, priceField, amountField, categorySelect);
         return productForm;
     }
